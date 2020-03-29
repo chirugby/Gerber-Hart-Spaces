@@ -1,0 +1,103 @@
+/** simple visualization */
+
+#outgoing_masterv1{
+   marker-fill-opacity: 1;
+   marker-line-color: #FFF;
+   marker-line-width: 0;
+   marker-line-opacity: 1;
+   marker-placement: point;
+   marker-type: ellipse;
+   marker-allow-overlap: true;
+}
+
+#outgoing_masterv1[in_business=true] {
+ marker-fill-opacity: 1;
+  marker-line-color: #A53ED5;
+  marker-line-width: 13;
+  marker-line-opacity:.2;
+  marker-fill:  #A53ED5;
+  [zoom=10]{  marker-line-width: 5;}
+  [zoom=11]{  marker-line-width: 5;}
+    [zoom=12]{marker-line-width: 5;}
+    [zoom=13]{marker-line-width: 13;}
+    [zoom=14]{marker-line-width: 15;}
+  [zoom=15]{marker-line-width: 15;}
+  [zoom=16]{marker-line-width: 15;}
+  [zoom=17]{marker-line-width: 15;}
+  [zoom=18]{marker-line-width: 20;}
+
+
+
+}
+#outgoing_masterv1[in_business=false] {
+  marker-fill-opacity: 1;
+  marker-line-color: #FFCC00;
+  marker-line-width: 13;
+  marker-line-opacity:.2;
+  marker-fill:  #FF9900;
+  comp-op: overlay;
+  [zoom=10]{marker-line-width: 5;}
+  [zoom=11]{marker-line-width: 5;}
+  [zoom=12]{marker-line-width: 5;}
+  [zoom=13]{marker-line-width: 13;}
+  [zoom=14]{marker-line-width: 15;}
+  [zoom=15]{marker-line-width: 15;}
+  [zoom=16]{marker-line-width: 15;}
+  [zoom=17]{marker-line-width: 15;}
+  [zoom=18]{marker-line-width: 20;}
+}
+#outgoing_masterv1[in_business=null] {
+   marker-fill: #B2DF8A;
+}
+#outgoing_masterv1 
+  [zoom = 18]{
+    marker-width: 6;}
+  [zoom = 17]{
+    marker-width: 6;}
+  [zoom = 16]{ 
+  	marker-width: 4;}
+  [zoom = 15]{
+    marker-width: 4;}
+  [zoom = 14]{
+    marker-width: 4;}
+  [zoom = 13]{
+    marker-width: 4;}
+  [zoom = 12]{
+    marker-width: 4;}
+  [zoom = 11]{
+    marker-width: 2;
+ 
+}
+  [zoom = 10]{
+    marker-width: 2;
+}
+
+#outgoing_masterv1::labels [zoom>14]{
+  text-name: '[name]';
+  text-face-name: 'Lato Bold';
+  text-size: 11;
+  text-label-position-tolerance: 0;
+  text-fill: #6d6d6d;
+  text-halo-fill: #FFF;
+  text-halo-radius: 0;
+  text-dy: -10;
+  text-dx: 10;
+  text-allow-overlap: false;
+  text-placement: point;
+  text-wrap-width: 30;
+  text-placements: "S, N";
+  [label_dir= 'S']{text-placements: "S";}
+  [label_dir= 'N']{text-placements: "N";}
+  [label_dir= 'E']{text-placements: "E";}
+  [label_dir= 'W']{text-placements: "W";}
+  [label_dir= 'NW']{text-placements: "NW";}
+  [label_dir= 'NE']{text-placements: "NE";}
+  [label_dir= 'SW']{text-placements: "SW";}
+  [label_dir= 'SE']{text-placements: "SE";}
+  text-placement-type: simple;
+}
+#outgoing_masterv1::labels [zoom=16]{
+  text-dy: -5;
+  text-dx: 5;
+}
+

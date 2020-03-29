@@ -1,0 +1,42 @@
+	
+n.cartodb_id,
+n.the_geom,
+n.approved, 
+n.audience, 
+n.city, 
+n.date_confirmed, 
+n.genre, 
+n.known_open_date, 
+n.location, 
+n.location_confirmed, 
+n.name, 
+n.notes, 
+n.open, 
+n.source, 
+n.state, 
+n.year_opened, 
+
+
+	
+c.cartodb_id, 
+c.the_geom,
+c.location, 
+c.cartodb_georef_status, 
+c.city, 
+c.name, 
+c.source, 
+c.state, 
+
+SELECT n.the_geom, n.approved, n.cartodb_id, n.the_geom, n.approved, n.audience, n.city, n.date_confirmed, n.genre, n.known_open_date, n.location, n.location_confirmed, n.name, n.notes, 
+n.in_business,n.source, n.state, n.year_opened, c.cartodb_id, c.the_geom,c.address, c.cartodb_georef_status, c.city, c.name, c.source,c.state, c.zip FROM currentbarsyelp c, nycgaybarsmerge n WHERE c.name=n.name
+
+SELECT n.the_geom, n.approved, n.audience, n.city, n.date_confirmed, n.genre, n.known_open_date, n.location, n.location_confirmed, n.name, n.notes, 
+n.in_business,n.source, n.state, n.year_opened,c.address, c.city, c.name, c.source,c.state, c.zip FROM currentbarsyelp c, nycgaybarmastermerge n WHERE c.name=n.name
+
+
+SELECT n.the_geom, n.audience, n.city, n.date_confirmed,
+n.genre, n.known_open_date, n.location, n.location_confirmed, n.name,
+n.notes, n.in_business, n.source, n.state, n.year_opened, c.location AS location_c,
+c.city AS city_c, c.name AS name_c, c.source AS source_c, c.state AS state_c FROM 
+nycgaybarmastermerge n FULL JOIN currentbarsyelp c ON c.location=n.location AND c.city=n.city AND c.name=n.name AND
+c.source=n.source AND c.state=n.state 

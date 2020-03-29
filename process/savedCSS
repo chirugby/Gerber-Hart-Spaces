@@ -1,0 +1,350 @@
+Map {
+  background-color: #ffffff;
+}
+
+#water {
+    polygon-fill: #f12a7e;
+    polygon-opacity: 0.5;
+}
+
+//need to work on this. city names coming up weirdly. 
+//Too many at higher zooms and not any at lower ones
+#place_label [type='city']{
+  text-name: [name];
+  text-face-name: 'Mark SC Offc Pro Bold';
+  text-fill: #6e6c6c;
+ [zoom<=5]{text-size:0;}
+}
+
+//do a zoom-by-zoom research pass
+#housenum_label{
+  text-name: [house_num];
+     text-face-name: 'DIN Offc Pro Bold';
+     text-fill: #aeaeae;
+     text-size:7;
+     text-placement:point;
+  text-placement-type: list;
+  [zoom<=16] {text-size:0;}
+  [zoom=17] {text-size:5;
+  text-opacity:.5;}
+  [zoom=18] {text-size:7;}
+  [zoom=19] {text-size:9;}
+  [zoom=20] {text-size:15;}
+  [zoom=21] {text-size:21;}
+  }
+
+#aeroway['mapnik::geometry_type'=2][zoom>=12] {
+ // [type="runway"] 
+  [type="taxiway"] {
+  line-color: #d2cfcf;
+  line-cap: round;
+  [zoom=13]{line-width: 3;line-color: #d9d7d7;}
+  [zoom=14]{line-width: 4;}
+  [zoom=15]{line-width: 5;}
+  [zoom=16]{line-width: 10;}
+  [zoom=17]{line-width: 15;}
+  [zoom=18]{line-width: 19;}
+  [zoom=19]{line-width: 94;}
+  [zoom=20]{line-width: 204;}
+  [zoom=21]{line-width: 304;}
+  }
+  [type="runway"] {
+  line-color: #d2cfcf;
+  line-cap: round;
+  [zoom=13]{line-width: 3;line-color: #d9d7d7;}
+  [zoom=14]{line-width: 4;}
+  [zoom=15]{line-width: 5;}
+  [zoom=16]{line-width: 10;}
+  [zoom=17]{line-width: 15;}
+  [zoom=18]{line-width: 19;}
+  [zoom=19]{line-width: 94;}
+  [zoom=20]{line-width: 204;}
+  [zoom=21]{line-width: 304;}
+  }
+}
+
+#building[zoom<15] {
+  line-color: #cbcbcb;
+  line-width: 0;
+  polygon-fill: #dfdede;
+  polygon-opacity: 0;
+}
+#building[zoom=15] {
+  line-color: #cbcbcb;
+  line-width: 1;
+  polygon-fill: #dfdede;
+  polygon-opacity: 1;
+}
+
+#building[zoom>19]{
+  line-color: #cbcbcb;
+  line-width: 4;
+  polygon-fill: #dfdede;
+  }
+
+#building[zoom>=16] {
+   ::fill[zoom>=15][zoom<=20] {
+    line-color: #cbcbcb;
+    line-width: 1;
+    polygon-fill: #dfdede;
+  }
+}
+
+#admin[admin_level=2] {
+  ::glow[maritime=0] {
+    opacity: 0;
+    line-color: #e3e3e3;
+    line-width: 6;
+    line-join: round;
+    [zoom>=5] { line-width: 7; }
+    [zoom>=7] { line-width: 8; }
+  }
+  line-width:1;
+  line-color: #8a8a8a;
+  line-opacity:0.8;
+  line-dasharray:2,1,3,1,1,1,4,1,5,1;
+  line-join: round;
+  line-cap: round;
+  //sea boundary
+  [maritime=1] {
+   // line-dasharray:4,4,3,3;
+    line-color: #6692be;
+    line-width: .2;
+    line-opacity: 0.1;
+  }
+  [disputed=1] {
+    line-dasharray: 9,7;
+  }
+  [zoom>=5] { line-width: 1.8; }
+  [zoom>=7] { line-width: 2.2; }
+}
+#landuse [class="park"]{
+  polygon-fill: #a7ffa6;
+  polygon-opacity: 0.2;
+  comp-op: multiply; 
+ line-color: #dfdfdf;
+    line-width: 1;}
+#landuse [class="cemetery"]{
+  polygon-fill: #6f6f6f;
+  polygon-opacity: 0.2;
+  comp-op: multiply; 
+ line-color: #e3e3e3;
+    line-width: 4;}
+
+#admin[admin_level>=3][maritime=0] {
+  ::glow[maritime=0] {
+    opacity: 0;
+    line-color: #e3e3e3;
+    line-width: 114;
+    line-join: round;
+    [zoom>=5] { line-width: 5; }
+    [zoom>=7] { line-width: 6; }
+  }
+  line-width: .5;
+  line-color: #a3a1a1;
+  line-opacity:0.5;
+  line-dasharray:2,1,3,1,1,1,4,1,5,1;
+  line-join: round;
+  line-cap: round;
+  [zoom>=7] { line-width: 1.5; }
+  [zoom>=10] { line-width: 2.2; }
+}
+
+#ne_10m_parks_and_protected_lands_area{
+  //polygon-fill: #f896e5;
+  polygon-opacity: 1;
+  //comp-op: multiply;
+  }
+
+#bathymetry [depth>100]{
+  line-color: #000;
+  
+  }
+
+  ///road tab
+
+// Line image patterns don't work well at lower zoomlevels,
+// so we vary opacity, weight, and dasharrays to bring texture
+// to regular line strokes.
+
+#road_label{
+  text-name: [name];
+     text-face-name: 'DIN Offc Pro Bold';
+     text-fill: #aeaeae;
+     text-size:10;
+     text-placement:line;
+     text-repeat-distance: 200;
+  text-placement-type: list;
+  [zoom<=14]{text-size:0;}
+  [zoom=21]{text-size:30;}
+  }
+
+
+#road['mapnik::geometry_type'=2]::line,
+#bridge['mapnik::geometry_type'=2]::line,
+{
+  [class='motorway'] {
+    [zoom>=7][zoom<=11] {
+      a/line-width:0.6;
+      a/line-opacity:0.2;
+      a/line-dasharray:2,1;
+      b/line-width:0.8;
+      b/line-opacity:0.2;
+      b/line-dasharray:12,1;
+      [zoom>=9] {
+        a/line-opacity:0.1;
+        b/line-opacity:0.1;
+      }
+      [zoom>=8] {
+        a/line-width:1;
+        b/line-width:1.2;
+      }
+      [zoom>=10] {
+        a/line-width:1.6;
+        a/line-opacity:0.1;
+        b/line-width:2.0;
+         b/line-opacity:0.1;
+      }
+    }
+    [zoom=12] { 
+      line-color:#e0e0e0;
+      line-width:1.5 ; 
+    }
+     [zoom>12] { 
+      line-color:#f1eeee;
+      line-width:2.5 ; 
+    }
+  
+  }
+    [class='main'] {
+    }
+  [class='motorway_link']{
+     line-color:#c3c4c4;
+      [zoom>=7][zoom<=11] {
+      a/line-color: #dfdede;
+      a/line-opacity: 0.25;
+      a/line-width: 0.8;
+      [zoom=8] { a/line-width: 0.9; }
+      [zoom=9] { a/line-width: 1; }
+      [zoom=10] { a/line-width: 1.1; }
+      [zoom=11] { a/line-width: 1.2; }
+    }
+    [zoom=12] {line-color:#dfdede;
+      line-width:1 ; }
+    [zoom>12] { 
+      line-color:#dfdede;
+      line-width:3.5 ; 
+    }
+  }
+  [class='street'],
+  [class='street_limited'] {
+    [zoom=12] {
+      a/line-width:7.75;
+      a/line-opacity:0.5;
+    }
+    [zoom=13] { 
+      a/line-width:1.75;
+      a/line-opacity:0.05;
+      b/line-width:1.5;
+      b/line-opacity:0.05;
+      b/line-dasharray:12,1;
+  }
+    [zoom=14] { 
+      a/line-width:2.5;
+      a/line-opacity:0.05;
+      b/line-width:1.75;
+      b/line-opacity:0.05;
+      b/line-dasharray:12,1;
+    }
+     [zoom=15] { 
+      a/line-width:3.5;
+      a/line-opacity:0.05;
+      b/line-width:5;
+      b/line-opacity:0.05;
+      b/line-dasharray:12,1;
+  }
+     [zoom=16] { 
+      a/line-width:3;
+      a/line-opacity:0.05;
+      b/line-width:1;
+      b/line-opacity:0.05;
+      b/line-dasharray:12,1;
+  }
+     [zoom>=17] { 
+      a/line-width:40;
+      a/line-opacity:0.5;
+      b/line-width:120;
+      b/line-opacity:0.05;
+      comp-op: multiply;
+  }
+  }
+  [class='service'] {
+    [zoom>=15] { line-color:#d7d9d8;
+      line-width:1.5 ;  }
+  }
+  [class='path'] {
+    [zoom=16] { line-color:#c3c4c4;
+      line-width:1.75 ; line-dasharray:4,2;}
+    [zoom>=17] { line-color:#cfd2d0;
+      line-width:2.5 ; line-dasharray:4,2; }
+  }
+  [class='major_rail'][zoom>=14],
+    [class='minor_rail'][zoom>=16] {
+    ['mapnik::geometry_type'=2] {
+       line-color:#c3c4c4;
+      a/line-width:1;
+      a/line-opacity:0.05;
+      a/line-dasharray:2,1;
+      b/line-width:1.5;
+      b/line-opacity:0.05;
+      b/line-dasharray:12,1;
+      c/line-width:2;
+      c/line-opacity:0.05;
+      c/line-dasharray:20,3;
+    }
+  }
+}
+
+
+
+
+#tunnel['mapnik::geometry_type'=2]::line {
+  line-color:#d7d7d7;
+  line-width:2;
+  line-dasharray:2,1;
+  line-opacity: .25;
+  [class='major_rail']{line-width:0;}
+  }
+#tunnel::case { opacity:0.25; 
+line-color: #dfdede;}
+//terrain tab
+  #hillshade {
+  opacity: 0.1;
+  [class='medium_shadow'] {
+     polygon-fill: #bebebe; 
+    polygon-opacity:0.6;
+    polygon-comp-op: multiply;
+  }
+  [class='full_shadow'] {
+  polygon-fill: #bebebe;
+    polygon-opacity:0.2;
+    polygon-comp-op: multiply;
+  }
+  [class='medium_highlight'] {
+    polygon-fill: fadeout(#fff,90);
+  }
+  [class='full_highlight'] {
+    polygon-fill: fadeout(#fff,80);
+  }
+}
+
+#contour {
+  opacity: 0;
+  line-color: #dfdede;
+  [zoom<=14][index=2],
+  [zoom<=14][index=10],
+  [zoom>=15] {
+    
+    [index=10],
+  }
+}

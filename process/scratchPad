@@ -1,0 +1,78 @@
+#nycgaybarmastermerge {
+   marker-fill-opacity: 1;
+   marker-line-color: #FFF;
+   marker-line-width: 0;
+   marker-line-opacity: 1;
+   marker-placement: point;
+   marker-type: ellipse;
+   marker-allow-overlap: true;
+}
+
+#nycgaybarmastermerge[in_business=true] {
+  marker-fill-opacity: 1;
+   marker-line-color: #FFF;
+   marker-line-width: 0;
+   marker-fill: #A53ED5;
+}
+#nycgaybarmastermerge[in_business=false] {
+  marker-fill-opacity: .5;
+   marker-line-color: #FFFFFF;
+   marker-line-width: 0;
+   marker-fill:  #FF9900;
+   
+   
+}
+#nycgaybarmastermerge[in_business=null] {
+   marker-fill: #B2DF8A;
+}
+#nycgaybarmastermerge 
+  [zoom = 18]{
+      marker-width: 13;}
+  [zoom = 17]{
+      marker-width: 10;}
+  [zoom = 16]{
+    marker-width: 10;}
+    [zoom = 15]{
+      marker-width: 8;}
+  [zoom = 14]{
+    marker-width: 7;}
+    [zoom = 13]{
+    marker-width: 3;}
+    [zoom = 12]{
+    marker-width: 4;}
+    [zoom = 11]{
+    marker-width: 2;}
+
+#nycgaybarmastermerge::labels [zoom>15]{
+  text-name: '[name]';
+  text-face-name: 'Lato Bold';
+  text-size: 11;
+  text-label-position-tolerance: 0;
+  text-fill: #000;
+  text-halo-fill: #FFF;
+  text-halo-radius: 0;
+  text-dy: -10;
+  text-dx: 10;
+  text-allow-overlap: true;
+  text-placement: point;
+  text-wrap-width: 30;
+  text-placements: "S, N";
+  [label_dir= 'S']{text-placements: "S";}
+  [label_dir= 'N']{text-placements: "N";}
+  [label_dir= 'E']{text-placements: "E";}
+  [label_dir= 'W']{text-placements: "W";}
+  [label_dir= 'NW']{text-placements: "NW";}
+  [label_dir= 'NE']{text-placements: "NE";}
+  [label_dir= 'SW']{text-placements: "SW";}
+  [label_dir= 'SE']{text-placements: "SE";}
+  text-placement-type: simple;
+}
+#nycgaybarmastermerge::labels [zoom=16]{
+  text-dy: -5;
+  text-dx: 5;
+}
+
+
+
+
+SELECT *, 'NW' as label_dir FROM nycgaybarmastermerge
