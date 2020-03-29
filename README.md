@@ -1,6 +1,6 @@
 # Gerber/Hart LGBT Spaces
 
-GH Spaces is a project of the Gerber/Hart Library and Archives (gerberhart.org).  
+GH Spaces is a project of the Gerber/Hart Library and Archives (www.gerberhart.org).  
 
 The data is built from the historical assets of Gerber/Hart and the hard work of our volunteers.  This project owes a huge debt to the OUTgoing NYC project (www.outgoingnyc.com) by Jeff Ferzuco and CARTO (www.carto.com).  Jeff provided the software template and CARTO provides the technical framework used for the site. 
 
