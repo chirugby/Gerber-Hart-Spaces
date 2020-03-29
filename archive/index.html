@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Leaflet multilayer example | CartoDB.js</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
+
+<!--     //css
+ -->   
+
+ <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+   <link rel="stylesheet" href="css/cartodb.css" />
+<link rel="stylesheet" href="css/OUTgoing-style.css" />
+>
+
+   <!-- //js -->
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+
+
+
+
+    <style>
+    </style>
+
+
+    <script type="infowindow/html" id="infowindow_template">
+    <div class="cartodb-popup">
+    <a href="#close" class="cartodb-popup-close-button close">x</a>
+     <div class="cartodb-popup-content-wrapper">
+       <div class="cartodb-popup-header">
+         <img style="width: 100%" src="http://cartodb.com/assets/logos/logos_full_cartodb_light.png"></src>
+       </div>
+       <div class="cartodb-popup-content">
+         <!-- content.data contains the field info -->
+         <h4>City: </h4>
+         <p>{{data.name}}</p>
+       </div>
+     </div>
+     <div class="cartodb-popup-tip-container"></div>
+    </div>
+    </script>
+
+  </head>
+  <body>
+
+ <!--    <div id="sidebar">
+         <h1>The History of New York's Gay Nightlife</h1>
+                <p>We looked back as far as we could and have scraped sources for all the nightlife spots – bars, clubs, cafes, restaurants, sex spots and wandering parties. Here is a starting list of entries, with more being added every month. Give us your story.</h1><p>Have a story or place we don't know about? Let us know. Send your tips and stories in the form below. We are assembling a library of stories for each location.  </p>
+    </div>
+     -->
+    <div id="map"></div>
+        <div id="infowindow_template"></div>
+
+    <script>
+
+      function main() {
+
+        // create leaflet map
+        var map = L.map('map', { 
+          zoomControl: true,
+          center: [40.727760, -73.987218],
+          zoom: 13
+        })
+
+        // add a base layer
+        L.tileLayer('http://a.tiles.mapbox.com/v3/zingbot.d2094e7e/{z}/{x}/{y}.png', {
+          attribution: 'linepointpath'
+        }).addTo(map);
+
+        //second tilelayer (fun!)
+
+        // Varnexrad = L.tileLayer.wms("http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/obs", {
+        // layers: 'RAS_RIDGE_NEXRAD',
+        // format: 'image/png',
+        // transparent: true,
+        // attribution: "NOAA/NWS"
+        // }).addTo(map);
+
+
+        // add cartodb layer with one sublayer: https://zingbot.cartodb.com/api/v2/viz/84236048-b8ca-11e4-8e46-0e0c41326911/viz.json
+        cartodb.createLayer(map, {
+          user_name: 'zingbot',
+          type: 'cartodb',
+          //'[' is containing the sublayers
+          sublayers: [{
+             sql: 'select * from nycgaybarmastermerge',
+            cartocss: '#layer {marker-fill: #e0e0e0; marker-opacity: 0.3; marker-width: 8px; }',             
+              interactivity: 'cartodb_id, name, location',
+
+          }]
+        })
+        .addTo(map)
+
+
+       .on('done', function(layer) {
+
+            var sublayer = layer.getSubLayer(0);
+            sublayer.infowindow.set('template', $('#infowindow_template').html());
+
+            sublayer.on('featureClick', function(e, latlng, pos, data) {
+                        alert("Hey! You clicked " + data.cartodb_id);
+
+            subLayer.on('featureOver', function(e, latlon, pos, data, subLayerIndex) {
+                  console.log("hovered over");
+                  console.log(data);
+      }); 
+
+              // console.log("Name: " + data.name + " @ " + data.location);
+                // $('#map').css('cursor', 'pointer');              
+              });
+                  })
+          
+          .on('error', function() {
+          console.log(error);           
+
+        });
+
+
+           // barData.on('featureClick', function(e, pos, pixel, data) {
+          //   console.log("Name: " + data.name + " @ " + data.location);
+          //   $('#map').css('cursor', 'pointer');
+          // });
+          // barData.setInteraction(true)
+          
+          // map.on('click',function(e){
+          // });
+          // //Controlling the Popups. this is for hover only
+
+          // var infobox = new cdb.geo.ui.InfoBox({
+          //   width: 100,
+          //   layer: layer,
+          //   template: '<p class="cartodb-infobox">{{name}}</p></br><p>{{location}}</p>',
+          //   position: 'bottom|left' // top, bottom, left and right are available
+          // });
+
+          // $("body").append(infobox.render().el); -->
+
+
+
+
+      }      
+
+      window.onload = main; 
+
+    </script>
+ 
+  </body>
+</html>
+
+
+
+ <!-- / // ONLY CONSOLE display print on the console the place name on hover
+         

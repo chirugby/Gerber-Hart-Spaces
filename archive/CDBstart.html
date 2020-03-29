@@ -1,0 +1,68 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Leaflet multilayer example | CartoDB.js</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
+    <style>
+      html, body, #map {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+      .sidePanel{
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    border:20px solid;
+    font-family: "expo-sans-pro";
+    position: absolute; 
+    width:50%;    
+    height: 100px;
+    background-color:#fff;
+    opacity: 1;
+    bottom:0%;
+    z-index: 10000;
+    padding: 10px 0px 0px 10px;
+    margin: 0px 5px 5px 5px;
+    border: 0px solid #7facec;
+}
+    </style>
+ 
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.ie.css" />
+    <![endif]-->
+ 
+  </head>
+  <body>
+    <div id="map"></div>
+    <div class="sidePanel">Information bar TKO</div>
+    <!-- include cartodb.js library -->
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+    <script>
+
+cartodb.createVis('map', 'https://zingbot.cartodb.com/api/v2/viz/84236048-b8ca-11e4-8e46-0e0c41326911/viz.json')
+  .done(function(vis, layers) {
+    // layer 0 is the base layer, layer 1 is cartodb layer
+    // when setInteraction is disabled featureOver is triggered
+    layers[1].setInteraction(true);
+    layers[1].on('featureOver', function(e, latlng, pos, data, layerNumber) {
+      cartodb.log.log(e, latlng, pos, data, layerNumber);
+    });
+
+    // you can get the native map to work with it
+    var map = vis.getNativeMap();
+
+    // now, perform any operations you need, e.g. assuming map is a L.Map object:
+    // map.setZoom(3);
+    // map.panTo([50.5, 30.5]);
+  });
+
+  </script>
+ 
+  </body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Basic Carto.js example</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+  <link href='css/L.Control.Locate.min.css' rel='stylesheet' type='text/css'>
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+   <!-- External Libraries -->
+  <script src="js/jquery-1.11.3.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <script src="js/jQRangeSlider-min.js"></script>
+  <script src="js/jQAllRangeSliders-min.js"></script>
+  <script src="js/L.Control.Locate.js"></script>
+  <script src="js/odyssey.js" charset="UTF-8"></script>
+
+  <script src="https://cartodb.github.io/carto-vl/dist/carto-vl.js"></script>
+  <script src="https://cartodb.github.io/carto-vl/vendor/mapbox-gl-dev.js"></script>
+  <script src="https://cartodb.github.io/carto-vl/vendor/mapbox-gl-dev.css"></script>
+  
+  <!-- Include cartodb.js Library -->
+  <script src="https://rawgit.com/CartoDB/cartodb.js/dist/carto.js"></script>
+   <script src="js/index.js"></script>
+  
+  <style>
+    html { box-sizing:border-box; height:100%; font-family: 'Ideal Sans A', 'Ideal Sans B';}
+
+    body { background:#000; height:100%; font-family:"Open sans", Helvetica, Arial, sans-serif; }
+
+      #container { display:flex; width:100%; height:100%; }
+      #map {z-index: 100;
+flex:1; margin:10px; }
+      #widgets { width:300px; margin:10px 10px 10px 0; }
+      .widget { background: white; padding:10px; margin-bottom:10px; }
+      .widget h1 { font-size:1.2em; }
+      .widget-category li { margin:10px 0 0 30px; }
+      #
+    }
+  </style>
+</head>
+
+<!--Content-->
+<body>
+  <div id="container">
+
+  <div id="widgets">
+    <div id="barDataview" class="widget">
+      <h1>Bar Types</h1>
+          <select class=".js-bars">
+            <option value="">All</option>
+          </select>
+        </div>
+
+</div>
+  <div id="map"></div>
+
+  <div id='title'><a href='http://outgoingnyc.com'>OUTgoing</a>
+  <div id='subtitle'>
+    <p id='intro'>Explore NYC's historic queer nightlife.</p>
+   <!-- Start search box -->
+       <input type="text" placeholder="Find a place" id="search-box" class="ui" onkeypress="searchbox()"/>
+      <!-- <input type="button" id="search-button" /> -->
+      <input type="button" id="search-button" value="Search" onClick="searchbox()"/>
+     <!-- <input type="submit" style="visibility: hidden;" /> -->
+     <input type="button" id="reset-button" value="Reset" onClick="reset()"/>
+     <!-- End search box -->
+          </div>
+      </div>
+</div>
+
+ <div id="navBar" >
+  <ul>
+     <li>
+        <a id='about' href="http://more.outgoingnyc.com/more/2015/8/14/about-outgoing" target="blank" >about </a></li>
+        <li>
+        <a id='getupdates' href="http://more.outgoingnyc.com/" target="blank">more.blog</a>
+      </li>
+    </ul>
+</div>
+
+<!--Add the Map -->
+  <script>
+    (async () => {
+      // Create the Leaflet Map
+      var map = L.map('map').setView([40.74, -73.99], 14);
+
+      // Add Voyager Basemap
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png', {
+        maxZoom: 21,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
+      }).addTo(map);
+
+      // Create the Client
+      var client = new carto.Client({
+        apiKey: 'public_default',
+        username: 'jferzoco'
+      });
+
+      // Create a source
+      var outgoingSync = new carto.source.Dataset('outgoinggsync0908');
+
+      // Create a source
+      var outgoingdotsSource = new carto.source.SQL('SELECT * FROM outgoinggsync0908');
+
+      // Create a style
+      var outgoingdotsStyle = new carto.style.CartoCSS(`
+        #layer {
+        marker-line-color: #FFF;
+        marker-line-width: 0;
+        marker-allow-overlap: true;
+        [in_business=true] {
+        marker-line-color: #FFCC00 ;
+        marker-line-width: 13;
+        marker-line-opacity:.3;
+        marker-fill:  #FFCC00;
+        marker-width: 10;}
+        [in_business=false] {
+        marker-fill-opacity: 1;
+        marker-line-color: #A53ED5 ;
+        marker-line-width: 13;
+        marker-line-opacity:.2;
+        marker-fill:  #dbc2e7 ;
+        marker-width: 10;
+        comp-op: overlay;
+        }
+      [in_business=null] {
+        marker-fill: #B2DF8A ;}
+      [zoom<=9]{
+        marker-line-width: 0;
+        marker-width: 0;}    
+      [zoom=10]{
+        marker-line-width: .5;
+        marker-width: 1;}
+      [zoom=11]{
+        marker-line-width: 3;
+        marker-width: 1;}
+      [zoom=12]{
+        marker-line-width: 3;
+        marker-width: 2;}
+      [zoom=13]{
+        marker-line-width: 5;
+        marker-width: 2;}
+      [zoom=14]{
+        marker-line-width: 5;
+        marker-width: 3;}
+      [zoom=15]{
+        marker-line-width: 8;
+        marker-width: 2;}
+      [zoom=16]{
+        marker-line-width: 7;
+        marker-width: 4;}
+      [zoom=17]{
+        marker-line-width: 14;
+        marker-width: 4;}
+      [zoom>=18]{
+        marker-line-width: 14;
+        marker-width: 6;}}`);
+
+      // Create a layer
+      var outgoingDots = new carto.layer.Layer(outgoingdotsSource, outgoingdotsStyle, 
+        // Declare columns for interaction
+        {featureClickColumns: [ 'name', 'genre2' ], featureOverColumns: [ 'name' ] });
+     
+      // Create a style
+      var populatedPlacesStyle = new carto.style.CartoCSS(`
+        #layer {
+          marker-width: 100;
+          marker-fill: #CDCDCD;
+        }`);
+
+
+      // Add the layers to the client
+      client.addLayers([outgoingDots]);
+
+      // Add the client layer to the map
+      client.getLeafletLayer().addTo(map);
+
+//widgets
+      const barDataview = new carto.dataview.Category(outgoingSync, 'name', {
+  limit: 100
+        //, operation: carto.operation.SUM,
+        //   //operationColumn: 'genre2'
+      });
+
+      barDataview.on('columnChanged', function (newColumn) {
+    console.log('Column changed', newColumn);
+    });
+     
+     barDataview.on('dataChanged', data => {
+  const barNames = data.categories.map(category => category.name).sort();
+  refreshCountriesWidget(barNames);
+});
+
+  function refreshBarWidget(barNames) {
+  const widgetDom = document.querySelector('#barDataview');
+  const barDom = widgetDom.querySelector('.js-bars');}
+
+   barDom.onchange = event => {
+    const name = event.target.value;
+    highlightBar(name);
+    filterPopulatedPlacesByCountry(name);
+  };
+
+ barNames.forEach(name => {
+    const option = document.createElement('option');
+    option.innerHTML = name;
+    option.value = name;
+    barDom.appendChild(option);
+  });
+
+
+function highlightBar(name) {
+  let cartoCSS = `
+    #layer {
+      marker
+      }
+    }
+  `;
+  if (name) {
+    cartoCSS = `
+      ${cartoCSS}
+      #layer[name!='${name}'] {
+        marker-fill: green;
+      }
+    `;
+  }
+  outgoingDots.setContent(cartoCSS);
+}
+
+function filterBars(name) {
+  let query = `
+    SELECT *
+      FROM outgoinggsync0908
+      WHERE name IN (SELECT name FROM outgoinggsync0908)
+  `;
+  if (admin) {
+    query = `
+      SELECT *
+        FROM outgoinggsync0908
+        WHERE name='${name}'
+    `;
+  }
+  outgoingdotsSource.setQuery(query);
+}
+
+
+
+
+   client.addDataview(barDataView);
+
+
+// add popup
+      var popup;
+        outgoingDots.on('featureOver', function (featureEvent) {
+        if (!popup) {
+          popup = L.popup();
+          }
+
+        var data = featureEvent.data;
+        var content = data.name;
+        content += data.location ? (' (' + data.genre2 + ')') : '';        
+
+        popup.setLatLng(featureEvent.latLng);
+        popup.setContent(content);
+        popup.openOn(map);
+        console.log('featureOver', featureEvent.latLng, featureEvent.data.genre2);
+          });
+
+
+        // Define category
+    
+    //     var categoryDataview = new carto.dataview.Category(outgoingSync, 'name',{ limit: 1000,
+    //   //operation: carto.operation.SUM,
+    //   //operationColumn: 'genre2'
+    // });
+
+    //   categoryDataview.on('columnChanged', function (newColumn) {
+    //   console.log('Column changed', newColumn);
+    // });
+
+    //   categoryDataview.on('dataChanged', function (newData) {
+    //   var formattedData = '<b>' + newData.operation.toUpperCase() + '</b>';
+    //   formattedData += '<ul>';
+    //   for (var category of newData.result) {
+    //     formattedData += '<li>' + category.name + ': ' + category.genre2 + '</li>';
+    //   }
+    //   formattedData += '</ul>';
+    //   document.getElementById('widget').innerHTML = formattedData;
+    //   console.log('Data changed', newData);
+    // });
+
+    // client.addDataview(categoryDataview);
+
+    })();
+  </script>
+</body>
+
+</html>

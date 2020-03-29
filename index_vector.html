@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OUTgoing: Explore NYC's historic gay nightlife</title>
+        <meta charset="utf-8" />
+<!--         Change when done with update-->        
+        <meta property="og:image" content="https://zingbot.github.io/OUTgoing/img/OUTgoingcover.png"/>
+        <!-- -->
+        <meta name="viewport" content="initial-scale=1">
+        <link rel="icon" href="img/favicon.png" type="image/x-icon"/>
+<!--         Carto.js 3.15 -->
+         <link rel="stylesheet" href="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/themes/css/cartodb.css">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <link href='css/jquery-ui.css' rel='stylesheet' type='text/css'>
+        <link href='css/jquery-ui.structure.css' rel='stylesheet' type='text/css'>
+        <link href='css/jquery-ui.theme.css' rel='stylesheet' type='text/css'>
+        <link href='css/classic.css' rel='stylesheet' type='text/css'>
+        <link href='css/L.Control.Locate.min.css' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat|Rubik:bold|Rubik:medium|Rubik:light|Rubik:italic|Rubik:italic" rel="stylesheet">
+        <!--  Always Last -->
+        <link rel="stylesheet" href="css/OUTgoing-style.css"/>
+        <!-- Javascript -->
+        <script type="text/javascript">
+        var switchTo5x=true;</script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+       <script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+        <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js"></script>
+        <script src="js/jquery-1.11.3.js"></script>
+        <script src="js/jquery-ui.js"></script>
+        <script src="js/jQRangeSlider-min.js"></script>
+        <script src="js/jQAllRangeSliders-min.js"></script>
+        <script src="js/L.Control.Locate.js"></script>
+        <script src="js/odyssey.js" charset="UTF-8"></script>
+         <!-- Include CARTO VL JS -->
+  <script src="http://libs.cartocdn.com/carto-vl/v0.7.0/carto-vl.js"></script>
+  <!-- Include Mapbox GL JS -->
+  <script src="https://libs.cartocdn.com/mapbox-gl/v0.48.0-carto1/mapbox-gl.js"></script>
+  <!-- Include Mapbox GL CSS -->
+  <link href="https://libs.cartocdn.com/mapbox-gl/v0.48.0-carto1/mapbox-gl.css" rel="stylesheet" />
+
+        <!-- this will be removed upon geojson marker styling -->
+         <style type="cartocss/text" id="markerStyle">
+                                #outgoinggsync0908{
+                                    marker-fill-opacity: 1;
+                                    marker-line-color: #FFF;
+                                    marker-line-width: 0;
+                                    marker-line-opacity: 1;
+                                    marker-placement: point;
+                                    marker-type: ellipse;
+                                    marker-allow-overlap: true;
+                                    }
+                                #outgoinggsync0908[in_business=true] {
+                                    marker-fill-opacity: 1;
+                                    marker-line-color: #A53ED5;
+                                    marker-line-width: 13;
+                                    marker-line-opacity:.3;
+                                    marker-fill:  #dbc2e7;
+                                    comp-op: overlay;
+                                   [zoom<=9]{marker-line-width: 0;}
+                                    [zoom=10]{marker-line-width: 5;}
+                                    [zoom=11]{marker-line-width: 4;}
+                                    [zoom=12]{marker-line-width: 2;}
+                                    [zoom=13]{marker-line-width: 11;}
+                                    [zoom=14]{marker-line-width: 12;}
+                                    [zoom=15]{marker-line-width: 15;}
+                                    [zoom=16]{marker-line-width: 15;}
+                                    [zoom=17]{marker-line-width: 15;}
+                                    [zoom=18]{marker-line-width: 20;}
+                                    }
+                                #outgoinggsync0908[in_business=false] {
+                                    marker-fill-opacity: 1;
+                                    marker-line-color: #FFCC00;
+                                    marker-line-width: 13;
+                                    marker-line-opacity:.1;
+                                    marker-fill:  #FFCC00;
+                                    comp-op: overlay;
+                                    [zoom<=9]{marker-line-width: 0;}
+                                    [zoom=10]{marker-line-width: 5;}
+                                    [zoom=11]{marker-line-width: 4;}
+                                    [zoom=12]{marker-line-width: 2;}
+                                    [zoom=13]{marker-line-width: 11;}
+                                    [zoom=14]{marker-line-width: 12;}
+                                    [zoom=15]{marker-line-width: 15;}
+                                    [zoom=16]{marker-line-width: 15;}
+                                    [zoom=17]{marker-line-width: 15;}
+                                    [zoom=18]{marker-line-width: 20;}
+                                    }
+                                #outgoinggsync09082[in_business=null] {
+                                    marker-fill: #B2DF8A;
+                                    }
+                                #outgoinggsync0908{
+                                    [zoom = 18]{marker-width: 6;}
+                                    [zoom = 17]{marker-width: 6;}
+                                    [zoom = 16]{marker-width: 4;}
+                                    [zoom = 15]{marker-width: 4;}
+                                    [zoom = 14]{marker-width: 4;}
+                                    [zoom = 13]{marker-width: 3;}
+                                    [zoom = 12]{marker-width: 3;}
+                                    [zoom = 11]{marker-width: 2;}
+                                    [zoom = 10]{marker-width: 2;}
+                                    [zoom <= 10]{marker-width: 1;}
+
+                                    }
+                                #outgoinggsync0908::labels [zoom>14]{
+                                    text-name: '[name]';
+                                    text-face-name: 'Lato Bold';
+                                    text-size: 10;
+                                    text-fill: #878787;
+                                    text-halo-fill: #FFF;
+                                    text-halo-radius: 0;
+                                    text-allow-overlap: false;
+                                    text-placement: point;
+                                    text-wrap-width: 20;
+                                    text-placements: "N,S,E,W,NE,SE,NW,SW";
+                                    text-dy: 10;
+                                    text-dx: 10;
+                                    text-line-spacing: -2;
+                                    text-character-spacing: .5;
+                                    text-placement-type: simple;
+                                    text-vertical-alignment: auto;
+                                    text-comp-op: multiply;
+                                    text-min-distance: 2;
+                                    text-align: auto;
+                                    }
+                                #outgoinggsync0908::labels [zoom=15]{
+                                    text-size: 10.5;
+                                    }
+                                #outgoinggsync0908::labels [zoom=16]{
+                                    text-size: 10.5;
+                                    }
+                                #outgoinggsync0908::labels [zoom=17]{
+                                    text-size: 13;
+                                    }
+                                #outgoinggsync0908::labels [zoom=18]{
+                                    text-size: 13;
+                                    }
+                                #outgoinggsync0908::labels [zoom=19]{
+                                    text-size: 12; text-line-spacing: 3;
+                                    }
+                                #outgoinggsync0908::labels [zoom=20]{
+                                    }
+                                #outgoinggsync0908::labels [zoom=21]{
+                                    }
+    </style>
+    <script src="js/index_vector.js"></script>
+
+    </head>
+        <body>
+            <div id='title'><a href='http://outgoingnyc.com'>OUTgoing</a>
+            <div id='subtitle'>
+            <p id='intro'>Explore NYC's historic </br> queer nightlife.</p>
+            <div>            <!-- Start search box -->
+            <input type="text" placeholder="Find a place" id="search-box" class="ui" onkeypress="searchbox()"/>
+            <!-- <input type="button" id="search-button" /> -->
+            <input type="button" id="search-button" value="Search" onClick="searchbox()"/>
+            <!-- <input type="submit" style="visibility: hidden;" /> -->
+            <input type="button" id="reset-button" value="Reset" onClick="reset()"/>
+            <!-- End search box -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="navBar" >
+                <ul>
+                    <li>
+                     <a id='about' href="http://more.outgoingnyc.com/more/2015/8/14/about-outgoing" target="blank" >about/credits </a>
+                    </li>
+                    <li>
+                    <!--   <a id='getupdates' href="http://more.outgoingnyc.com/" target="blank">more.blog</a></li> -->
+                    </ul>
+            </div>
+            <div id='description'>
+                <ul>
+                 <li><p>Historic</p>
+                    <div>
+                        <span style="opacity:.3; background: #FFCC00; border-radius: 50%; position: absolute; width: 20px; height: 20px; right: 66px; top:-3px; ">
+                        </div>
+                    <div><span style="opacity:.75; background: #FFCC00; border-radius: 50%; position: absolute; width: 5px; height: 5px; right: 74px; top:4px; ">
+                        </div>
+                    <p> Current </p>
+                    <div> <span style="opacity:.5; background: #854EDE; border-radius: 50%; position: absolute; width: 20px; height: 20px; right: 66px; top:11px; ">
+                        </div>
+                    <div><span style="opacity:.4; background: #fff; border-radius: 50%; position: absolute; width: 5px; height: 5px; right: 73.5px; top:18.7px; ">
+                        </div>
+                    </li>
+                        </div>
+                    </div>
+                    <div class="list-group">
+                        <a class="fb-share-button" data-href="http://outgoingnyc.com" data-layout="button"></a>
+                        </div>
+                    </div>
+
+            <div id='infoBarWrapper'>
+                <div id='slider'>
+                     <div id='search'>
+                            <div class='statWrapper'><p id='statWrapperSites'></p>
+                            <p id='statWrapperLabel'></p></div>
+                        </div>
+                    </div>
+
+                <script>
+                    // slider functionality
+                    var global_data;
+                    $('#slider').html(); //initialize range slider
+                            //TimeSlider
+                    var sql = cartodb.SQL({ user: 'zingbot' })
+                    // fetch time range
+                    sql.execute('SELECT max(year_opened), min(year_opened) FROM ' + outgoingTable, function(data) {
+                        // global_data = data;
+                        var range = data.rows[0];
+                        var max = range.max;
+                        var min = range.min;
+                        console.log(range);
+                        $("#slider").rangeSlider({
+                        arrows: 0,
+                        // range: true,
+                        // min: min,
+                        // max: max,
+                        // values: [ min , max],
+                        bounds: {
+                            min: min,
+                            max: max
+                        },
+                        defaultValues: {
+                            min: min,
+                            max: max
+                        }
+                        });
+                    });
+                    //end sql.execute (bind to variable?)
+                    $('#slider').bind('valuesChanged', function (e, data) {
+                        // if (e) return console.error(e);
+                        // debugger;
+                        dateMin = String(Math.round(data.values.min,0));
+                        dateMax = String(Math.round(data.values.max,0));
+                        console.log("The min year is " + dateMin + " and the max year is " + dateMax)
+                        setSubLayer(dateMin,dateMax);
+                    }); //end slider bind
+                </script>
+                    <div id ='infoBar'>
+                        <ul id= 'infoList'>
+            
+                            <li id='infoBarAudience'> Click a point to explore</li>
+                            <li id='infoBarName'>OUTgoing is a project to document 150 years of LGBT nightlife in NYC. Zoom in and click to explore the locations.</li>
+                            <li id='infoBarOpened'></li>
+                            <li id='infoBarPubNotes'> </li>
+                    </ul>
+                    </div>
+                </div>
+                <div id='cartodb-map'> </div>
+                  <div id='map'> </div>
+                <div id='hoverWindow'></div>
+                <div id = 'text-wrapper'>
+                    <!--  <div id='menu'>
+                                <a  id="lesbian" class="button lesbian">Lesbian</a>
+                                <a id="gaymen" class="button gaymen"><i class="fa fa-mars-double"></i>Gay Men</a>
+                                <a  id="mixed" class="button mixed">Mixed</a>
+                                <a id="newEntries" class="button newEntries"> *NEW*</a>
+                                <a id="bar" class="button bar">Bars</a>
+                                <a id="club" class="button club">Dance Clubs</a>
+                                <a id="bathhouse" class="button bathhhouse">Bath Houses</a>
+                                <a id="cafe" class="button cafe">Cafes</a>
+                            </div>
+                </div> -->
+            </div>
+        </body>
+    </html>

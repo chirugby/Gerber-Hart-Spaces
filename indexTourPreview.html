@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OUTgoing: Explore NYC's historic gay nightlife</title>
+    <meta charset="utf-8" />
+    <meta property="og:image" content="http:/
+    /zingbot.github.io/OUTgoing/img/OUTgoingcover.png"/>
+    <meta name="viewport" content="initial-scale=1">
+    <link rel="icon" href="img/favicon.png" type="image/x-icon"/>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/iThing.css" type="text/css" />
+    <link href='css/jquery-ui.css' rel='stylesheet' type='text/css'>
+    <link href='css/jquery-ui.structure.css' rel='stylesheet' type='text/css'>
+    <link href='css/jquery-ui.theme.css' rel='stylesheet' type='text/css'>
+    <link href='css/classic.css' rel='stylesheet' type='text/css'>
+     <link href='css/L.Control.Locate.min.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="//cloud.typography.com/769568/687988/css/fonts.css" />
+
+    <!--  Always Last -->
+    <link rel="stylesheet" href="css/OUTgoing-style.css"/>
+
+    <!-- Javascript -->
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+    <script src="js/jquery-1.11.3.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/jQRangeSlider-min.js"></script>
+    <script src="js/jQAllRangeSliders-min.js"></script>
+    <script src="js/L.Control.Locate.js"></script>
+    <script src="js/odyssey.js" charset="UTF-8"></script>
+
+
+    <!-- <script src="//use.typekit.net/njv7tle.js"></script>
+    <script>try{Typekit.load();}catch(e){}</script> -->
+
+
+    <!-- this will be removed upon geojson marker styling -->
+    <style type="cartocss/text" id="markerStyle">
+      #outgoing_masterv2{
+        marker-fill-opacity: 1;
+        marker-line-color: #FFF;
+        marker-line-width: 0;
+        marker-line-opacity: 1;
+        marker-placement: point;
+        marker-type: ellipse;
+        marker-allow-overlap: true;
+        }
+
+      #outgoing_masterv2[in_business=true] {
+        marker-fill-opacity: 1;
+        marker-line-color: #A53ED5;
+        marker-line-width: 13;
+        marker-line-opacity:.2;
+        marker-fill:  #A53ED5;
+        [zoom=10]{marker-line-width: 5;}
+        [zoom=11]{marker-line-width: 5;}
+        [zoom=12]{marker-line-width: 5;}
+        [zoom=13]{marker-line-width: 13;}
+        [zoom=14]{marker-line-width: 15;}
+        [zoom=15]{marker-line-width: 15;}
+        [zoom=16]{marker-line-width: 15;}
+        [zoom=17]{marker-line-width: 15;}
+        [zoom=18]{marker-line-width: 20;}
+        }
+      #outgoing_masterv2[in_business=false] {
+        marker-fill-opacity: 1;
+        marker-line-color: #FFCC00;
+        marker-line-width: 13;
+        marker-line-opacity:.2;
+        marker-fill:  #FF9900;
+        comp-op: overlay;
+        [zoom=10]{marker-line-width: 5;}
+        [zoom=11]{marker-line-width: 5;}
+        [zoom=12]{marker-line-width: 5;}
+        [zoom=13]{marker-line-width: 11;}
+        [zoom=14]{marker-line-width: 12;}
+        [zoom=15]{marker-line-width: 15;}
+        [zoom=16]{marker-line-width: 15;}
+        [zoom=17]{marker-line-width: 15;}
+        [zoom=18]{marker-line-width: 20;}
+        }
+      #outgoing_masterv2[in_business=null] {
+        marker-fill: #B2DF8A;
+        }
+      #outgoing_masterv2
+        [zoom = 18]{marker-width: 6;}
+        [zoom = 17]{marker-width: 6;}
+        [zoom = 16]{marker-width: 4;}
+        [zoom = 15]{marker-width: 4;}
+        [zoom = 14]{marker-width: 4;}
+        [zoom = 13]{marker-width: 4;}
+        [zoom = 12]{marker-width: 4;}
+        [zoom = 11]{marker-width: 2;}
+        [zoom = 10]{marker-width: 2;
+        }
+
+      #outgoing_masterv2::labels [zoom>14]{
+        text-name: '[name]';
+        text-face-name: 'Lato Bold';
+        text-size: 10;
+        text-label-position-tolerance: 0;
+        text-fill: #878787;
+        text-halo-fill: #FFF;
+        text-halo-radius: 1;
+        text-dy: -10;
+        text-dx: 10;
+        text-allow-overlap: false;
+        text-placement: point;
+        text-wrap-width: 30;
+        text-placements: "N,S,E,W,NE,SE,NW,SW";
+        text-dy: 3;
+        text-dx: 3;
+        text-placement-type: simple;
+          }
+      #outgoing_masterv2::labels [zoom=15]{
+          text-dy: -5;
+          text-dx: 5;
+          }
+      #outgoing_masterv2::labels [zoom=16]{
+          text-dy: -5;
+          text-dx: 5;
+          }
+      #outgoing_masterv2::labels [zoom=17]{
+          text-dy: -5;
+          text-dx: 5;
+          }
+      #outgoing_masterv2::labels [zoom=18]{
+          text-dy: -5;
+          text-dx: 5;
+          }
+      #outgoing_masterv2::labels [zoom=19]{
+          text-dy: -5;
+          text-dx: 5;
+          }
+      #outgoing_masterv2::labels [zoom=20]{
+          text-dy: -5;
+          text-dx: 5;
+          }
+     #outgoing_masterv2::labels [zoom=21]{
+          text-dy: -5;
+          text-dx: 5;
+          }
+
+</style>
+<script>
+
+// Store state of the current tour
+var tourLine =[];
+var tourMarkers = [];
+
+
+function endTourLine(map){
+console.log("hello")
+  map.removeLayer(tourLine);
+  // XXX this doesn't actually remove the markers
+  tourMarkers.forEach(function (marker) {
+    map.removeLayer(marker);
+   });
+};
+
+function tourInit(map, url){
+   var seq = O.Sequential();
+
+  // when press left mode to next
+  O.Keys().left().then(seq.prev, seq)
+  O.Keys().right().then(seq.next, seq)
+
+  // create a story
+  var story = O.Story()
+
+  // fetch data from a geojson file
+  console.log('getting data');
+
+  $.getJSON(url, null, function(data) {
+    tourMarkersLayer = L.layerGroup([])
+      .addTo(map);
+
+    var disabledStyle = {
+        color: '#F00',
+        fillColor:   "#F00",
+        radius:      4,
+        weight:      0,
+        fillOpacity: 0.5
+    }
+    var enabledStyle = {
+        color: '#F00',
+        fillColor:   "#F00",
+        radius:      8,
+        weight:      0,
+        fillOpacity: 0.8
+    }
+    var positions = []
+    // load stops
+    for (var i = 0; i < data.features.length; ++i) {
+      var stop = data.features[i];
+      var pos = [stop.geometry.coordinates[1], stop.geometry.coordinates[0]]
+      positions.push(pos);
+
+      var tourIcon = L.icon({
+        iconUrl: 'OUTgoing_tourdot.png'
+      })
+      var marker = L.circleMarker(pos, disabledStyle)
+         .addTo(map)
+        .actions.toggleStyle(disabledStyle, enabledStyle);
+      tourMarkers.push(marker);
+
+      // execute the actions one after another
+      var action = O.Step(
+          // move the map to the position
+          map.actions.panTo(pos),
+          // toggle style for the marker
+          marker,
+          O.Sleep(500),
+          new L.DirectionalPopup({
+            closeButton: true,
+            className: 'odyssey-popup-lateral',
+            offset:[30, 0],
+            position: 'right'
+          })
+          .setLatLng(pos)
+          .setContent("<h1>" + stop.properties.description + "</h1><p><button type='button' onclick='endTourMarkers(map)'>End Tour</button></p>")
+          .actions.openClose(map)
+      );
+      story.addState(seq.step(i), action)
+    }
+
+    // add a polyline to give context
+    tourLine = L.polyline (positions, {
+          color:        "#F00",
+          weight:       2,
+          opacity:      0.5,
+          smoothFactor: 1,
+          clickable:    false
+    }).addTo (map);
+
+    story.go(0);
+  })
+}
+  // Constants
+var global_data2; //for testing
+
+var cdbPrefix = 'http://zingbot.cartodb.com/api/v2/sql?q=',
+    outgoingTable = 'outgoing_masterv2';
+//SQL_API_TABLE_SECONDARY = '';
+var sublayers = [];
+var layerSource = {
+    user_name: 'zingbot',
+    type: 'cartodb',
+    sublayers: [{
+        sql: "SELECT * FROM " + outgoingTable,
+        cartocss: '#outgoing_masterv2{ marker-fill:#bababa;[audience="lesbian"]{marker-fill: #000;}}',
+        infowindow: false
+    }]
+}
+var layerUrl =
+    'https://zingbot.cartodb.com/api/v2/viz/84236048-b8ca-11e4-8e46-0e0c41326911/viz.json';
+var sublayer;
+var map;
+
+    //get url parameters in bar from Stack Overflow http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+var urlParams;
+var url_loc;
+
+(window.onpopstate = function () { //get url parameters expecting CartoDB ID ("id") but all values will be parsed
+var match,
+    pl     = /\+/g,  // Regex for replacing addition symbol with a space
+    search = /([^&=]+)=?([^&]*)/g,
+    decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+    query  = window.location.search.substring(1);
+
+urlParams = {};
+    while (match = search.exec(query))
+    urlParams[decode(match[1])] = decode(match[2]);
+    })(); //end getting the url parameter in the string
+
+$.getJSON(cdbPrefix + 'SELECT *, ST_X(the_geom) AS lng, ST_Y(the_geom) AS lat FROM ' + outgoingTable, function(data) { //get all table elements from      CartoDB
+$.each(data.rows, function(key, val) {
+    locations[val.cartodb_id] = val; //add each location to locations object
+    });
+    if (locations[urlParams.id] != undefined){ //check for valid cartodb id in  url parameter
+    url_loc = urlParams.id; // if the url parameter is a valid cartodb id, assign to url_loc
+    }
+    init(); // draw the map
+    }); //end getJSON
+
+
+function draw_infobox(data){ //function to take in the values and display these in the infobox
+var genre2, genre, pub_desc, year_closed; //placeholder values
+    // global_data2 = data; // push into global scope for debugging
+
+    // validate values for display
+    if (data.hasOwnProperty('genre') && data.genre != null) {
+        genre = data.genre;
+    } else {
+        genre = '';
+    };
+    if (data.hasOwnProperty('genre2') && data.genre2 != null){
+        genre2 = data.genre2;
+      } else {
+        genre2 = '';
+      };
+    if (data.hasOwnProperty('pub_desc') && data.pub_desc != null){
+        pub_desc = data.pub_desc;
+      } else {
+        pub_desc = '';
+      };
+    if (data.hasOwnProperty('year_closed') && data.year_closed != null){
+        year_closed = 'c. ' + data.year_closed;
+      } else {
+        year_closed = 'present';
+      };
+      // end value validation
+
+      // display values in the info box
+$("#infoBar").html("<div class='infoBlock'id='infoBlockName'><p id='infoBarAudience'>" + data.audience + " > " + genre2 +" "+ genre +"</p><p id='infoBarName'>" + data.name + "</p><p id='infoBarOpened'>c. " + data.year_opened + " - " + year_closed + "</p> <p id='infoBarPubNotes'> " + pub_desc + "</p><p id='editThis' ><a href='http://bit.ly/outgoingform' target='_blank'><i class='fa fa-pencil-square fa-2x' alt='Edit'></i></a></p>");
+
+    }; //end function draw_infobox
+
+    function init(){
+      // initiate leaflet map
+      var loc_lat,loc_lng,zoom_level;
+      if (url_loc){
+        loc_lat = locations[url_loc].lat;
+        loc_lng = locations[url_loc].lng;
+        zoom_level = 16;
+        draw_infobox(locations[url_loc]);
+      } // end if
+
+
+      map = new L.Map('cartodb-map', {
+          center: [ loc_lat || 40.727760, loc_lng || -73.987218 ], //New York City
+          maxZoom: 21,
+          zoom: zoom_level || 12,
+          zoomControl: true,
+          keyboard: false
+      }) //end map
+
+      L.tileLayer('http://a.tiles.mapbox.com/v3/zingbot.d2094e7e/{z}/{x}/{y}.png', {maxZoom: 21, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+      })
+        .addTo(map);
+
+//GEOLOCATION INITIATION
+        L.control.locate({
+          position: 'topleft',  // set the location of the control
+          drawCircle: true,  // controls whether a circle is drawn that shows the uncertainty about the location
+          follow: false,  // follow the user's location
+          setView: true, // automatically sets the map view to the user's location, enabled if `follow` is true
+          stopFollowingOnDrag: false, // stop following when the map is dragged if `follow` is true (deprecated, see below)
+          remainActive: false, // if true locate control remains active on click even if the user's location is in view.
+          markerClass: L.circleMarker, // L.circleMarker or L.marker
+          circleStyle: {
+            },  // change the style of the circle around the user's location
+          markerStyle: {},
+          followCircleStyle: {},  // set difference for the style of the circle around the user's location while following
+          followMarkerStyle: {},
+          icon: 'fa fa-location-arrow',  // class for icon, fa-location-arrow or fa-map-marker
+          iconLoading: 'fa fa-spinner fa-spin',  // class for loading icon
+          circlePadding: [0, 0], // padding around accuracy circle, value is passed to setBounds
+    onLocationError: function(err) {alert(err.message)},  // define an error callback function
+    onLocationOutsideMapBounds:  function(context) { // called when outside map boundaries
+            alert(context.options.strings.outsideMapBoundsMsg);
+    },
+    showPopup: true, // display a popup when the user click on the inner marker
+    strings: {
+        title: "Show me where I am",  // title of the locate control
+        metersUnit: "meters", // string for metric units
+        feetUnit: "feet", // string for imperial units
+        popup: "You are within {distance} {unit} from this point",  // text to appear if user clicks on circle
+        outsideMapBoundsMsg: "You seem located outside the boundaries of the map" // default message for onLocationOutsideMapBounds
+    },
+    locateOptions: {
+                maxZoom: 16,
+
+    }  // define location options e.g enableHighAccuracy: true or maxZoom: 10
+}).addTo(map);
+
+
+//WALKING TOUR INITIATION
+//Walking Tour One start
+L.marker([40.729568,-74.012704]).addTo(map).on('click', function(e) {
+tourInit(map, 'data/my_places.geojson')
+});
+// Walking Tour Two start
+// L.marker([40.727568,-74.017704]).addTo(map).on('click', function(e) {
+// tourInit(map, 'data/my_places.geojson')
+// });
+// Walking Tour Three start
+
+
+       // vis-only layer
+       // cartodb.createLayer(map, layerUrl)
+       //  .addTo(map)
+       //  .on('done', function(layer) {
+       //   var sublayer = layer.getSubLayer(2);
+
+      // SQL-active layer
+      cartodb.createLayer(map, layerSource)
+        .addTo(map)
+        .done(function(layer) {
+          layer.setInteraction(true);
+          layer.on('error', function(err) {
+              console.log('error: ' + err);
+            });
+
+        var subLayerOptions = {
+          sql: "SELECT * FROM " + outgoingTable,
+          cartocss: $("#markerStyle").text(),
+          interactivity: 'year_opened, cartodb_id, name, year_opened, year_closed, audience, audience_2, audience, genre, genre2, source, pub_desc',
+          infowindow: true
+          } //end subLayerOptions
+
+        sublayer = layer.getSubLayer(0);
+        sublayer.set(subLayerOptions);
+        sublayers.push(sublayer);
+
+        sublayer.on('featureClick', function(e, latlng, pos, data) {
+          console.log(latlng);
+
+          draw_infobox(data);
+          //new L.CircleMarker([loc_lat, loc_lng],{radius: 40}).addTo(map);
+
+
+        }); //end sublayer.on
+
+        // sublayer.on('featureOver', function(e, latlng, pos, data, layerNumber) {
+        //       cartodb.log.log(e, latlng, pos, data, layerNumber);
+        //       $("#hover").css({'display':'block','left':pos.x-75,'bottom':($(window).height()-pos.y+20), 'cursor': 'pointer'});
+        //       $("#hover").find('p').text(data.name);
+        //             });
+        //       sublayer.on('featureOut', function(e,latlng, pos, data, layerNumber) {
+        //       $("#hover").css({'display':'none'});
+        //                 });
+        // sublayer.on('featureOver', function(e, pos, pixel, data) {
+        //   $("#hoverWindow").html("<h4>Name</h4><p>" + data.name + "</p>");
+        //   console.log(data.name)
+        // });
+
+        var LayerActions = {
+          mixed: function(){
+            sublayers[0].setSQL("SELECT * FROM " + outgoingTable + " WHERE audience = 'Mixed'");
+              return true;
+          },
+          gaymen: function(){
+            sublayers[0].setSQL("SELECT * FROM " + outgoingTable + " WHERE audience = 'Gay'");
+              return true;
+          },
+          lesbian: function(){
+            sublayers[0].setSQL("SELECT * FROM " + outgoingTable + " WHERE audience = 'Lesbian'");
+              return true;
+            },
+          bar: function(){
+            sublayers[0].setSQL("SELECT * FROM " + outgoingTable + " WHERE genre ='Bar'");
+            return true;
+          },
+          dance: function(){
+            sublayers[0].setSQL("SELECT * FROM " + outgoingTable + " WHERE genre2 ='Dance'");
+            return true;
+          },
+          bathhouse: function(){
+            sublayers[0].setSQL("SELECT * FROM " + outgoingTable + " WHERE genre ='Bathhouse'");
+            return true;
+          },
+          cafe: function(){
+            sublayers[0].setSQL("SELECT * FROM " + outgoingTable + " WHERE genre ='Cafe'");
+            return true;
+          }
+
+        }//end var LayerActions
+
+        //button work
+        $('.button').click(function() {
+          $('.button').removeClass('selected');
+          $(this).addClass('selected');
+          LayerActions[$(this).attr('id')]();
+          }); //end button click
+        $('#geoLocate').click(function(){
+           map.locate({setView: true, maxZoom: 16});
+        });
+        });
+      }//end init
+
+      function setSubLayer(dateMin,dateMax) {
+            sublayers[0].setSQL("SELECT * FROM " + outgoingTable + " WHERE (year_closed >= " + dateMin + " OR year_closed IS NULL) AND year_opened <= " + dateMax);
+            return true;
+          }; //end function setSubLayer
+
+      function searchbox(){
+          var text = document.getElementById("search-box");
+          // console.log(text.value);
+          sublayers[0].setSQL("SELECT * FROM " + outgoingTable + " WHERE name ILIKE '%" + text.value + "%'");
+          return true;
+        }; //end searchbox()
+
+      function reset(){ //reset the display to all locations on the map
+        document.getElementById("search-box").value = '';
+        sublayers[0].setSQL("SELECT * FROM " + outgoingTable);
+        return true;
+      };
+
+    var locations = {}; //JS object to contain all items in the table (used to lookup the url parameter)
+
+
+
+    //Google Analytics code
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-38175372-4', 'auto');
+      ga('send', 'pageview');
+
+    setTimeout(function(){var a=document.createElement("script");
+    var b=document.getElementsByTagName("script")[0];
+    a.src=document.location.protocol+"//script.crazyegg.com/pages/scripts/0035/3700.js?"+Math.floor(new Date().getTime()/3600000);
+    a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);
+  </script>
+
+</head>
+
+<body>
+      <!--   Facebook Connect -->
+    <div id="fb-root"></div>
+          <script>(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3";
+          fjs.parentNode.insertBefore(js, fjs);
+              }(document, 'script', 'facebook-jssdk'));
+          </script>
+    <div>
+          <ul id="navBar">
+            <li><a id='about' href="about.html" target="blank" >FAQ/About</a></li>
+            <li><a id='edits' href="http://bit.ly/outgoingform" target="blank">Help edit!</a></li>
+            <li><a id='getupdates' href="http://eepurl.com/bnjF9f" target="blank">Get Updates</a></li><li><a id='gofundme' href="http://www.gofundme.com/OUTgoingnyc" target="blank">GoFundMe</a></li>
+              </ul>
+    </div>
+    <!-- Start search box -->
+    <input type="text" placeholder="e.g The Saint or RubyFruit" id="search-box" class="ui" onkeypress="searchbox()"/>
+    <!-- <input type="button" id="search-button" /> -->
+    <input type="button" id="search-button" value="Go!" onClick="searchbox()"/>
+    <!-- <input type="submit" style="visibility: hidden;" /> -->
+    <input type="button" id="reset-button" value="Reset" onClick="reset()"/>
+      <!-- End search box -->
+    <div id='infoBarWrapper'>
+          <div id='slider'></div>
+    <script>
+
+      // slider functionality
+      var global_data;
+
+      $('#slider').html(); //initialize range slider
+              //TimeSlider
+      var sql = cartodb.SQL({ user: 'zingbot' })
+      // fetch time range
+      sql.execute('SELECT max(year_opened), min(year_opened) FROM ' + outgoingTable, function(data) {
+        // global_data = data;
+        var range = data.rows[0];
+        var max = range.max;
+        var min = range.min;
+        console.log(range);
+        $("#slider").rangeSlider({
+          arrows: 0,
+          // range: true,
+          // min: min,
+          // max: max,
+          // values: [ min , max],
+          bounds: {
+            min: min,
+            max: max
+          },
+          defaultValues: {
+            min: min,
+            max: max
+          }
+        });
+      });
+      //end sql.execute (bind to variable?)
+      $('#slider').bind('valuesChanged', function (e, data) {
+        // if (e) return console.error(e);
+        // debugger;
+        dateMin = String(Math.round(data.values.min,0));
+        dateMax = String(Math.round(data.values.max,0));
+        console.log("The min year is " + dateMin + " and the max year is " + dateMax)
+
+        setSubLayer(dateMin,dateMax);
+      }); //end slider bind
+
+    </script>
+          <div id ='infoBar'>
+          <div id='infoBarNameStart'>
+<p>Use slider to select a range</p></br>
+or</br>
+<p>geolocate <i class="fa fa-location-arrow"></i> </p></br>
+then</br>
+<p>select location for details.</p>
+            </div>
+              </div>
+        </div>
+        <div id='cartodb-map'> </div>
+
+
+      <div id = 'text-wrapper'>
+        <div id='title'>OUTgoing
+          <div id='subtitle'>
+            <p id='intro'>Explore NYC's historic gay nightlife.<p class='credit'> created by <a id='lpp' href="http://linepointpath.com" target='_blank'>linepointpath <i class="fa fa-arrow-circle-right"></i></a></p>
+          </div>
+        </div>
+        <div class="list-group">
+             <a class="fb-share-button" data-href="http://outgoingnyc.com" data-layout="button"></a><a class="list-group-item" href="https://twitter.com/outgoingnyc" ><i class="fa fa-twitter-square"></i></a>
+        </div>
+
+       <!--  <div id='menu'>
+          <a  id="lesbian" class="button lesbian">Lesbian</a>
+          <a id="gaymen" class="button gaymen"><i class="fa fa-mars-double"></i>Gay Men</a>
+          <a  id="mixed" class="button mixed">Mixed</a>
+          <a id="newEntries" class="button newEntries"> *NEW*</a>
+
+          <a id="bar" class="button bar">Bars</a>
+          <a id="club" class="button club">Dance Clubs</a>
+          <a id="bathhouse" class="button bathhhouse">Bath Houses</a>
+          <a id="cafe" class="button cafe">Cafes</a>
+          </div>
+      </div> -->
+
+      <div id='description'>
+        <ul>
+            <li><img src="./img/openDot.png" class = "openDot" /> <span id='legend'> Current</span> </li>
+            <li><img src="./img/closedDot.png" class = "closedDot" /><pan id='legend'>  Historic </p> </li>
+
+        </ul>
+
+      </div>
+
+    </div>
+
+</body>
+</html>
+
